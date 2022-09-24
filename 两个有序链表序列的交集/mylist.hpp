@@ -26,6 +26,44 @@ class list {
 public:
 	list();
 	list(const list<T>& _list);
+	class iterator {
+	public:
+		friend class list<T>;
+		explicit iterator(node<T>* p = 0) {
+			current = p;
+		}
+		iterator(const iterator& other) {
+			current = other.current;
+		}
+		iterator& operator++() {
+			current = current->next;
+			return *this;
+		}
+		iterator operator++(int) {
+			iterator temp = *this;
+			++(*this);
+			return temp;
+		}
+		node<T>* operator->() {
+			return current;
+		}
+		T& operator*() {
+			return current->data;
+		}
+		bool operator == (const iterator& rhs)const {
+			return current == rhs.current;
+		}
+		bool operator!=(const iterator& rhs)const {
+			return !(*this == rhs);
+		}
+		operator node<T>* () {
+			return current;
+		}
+	private:
+		node<T>* current;
+	};
+	iterator begin()const { return iterator(p_head->next); }
+	iterator end()const { return iterator(p_end); }
 	list<T>& operator= (const list<T>& _list);
 	bool insert_node(int index, T val);        //插入：值为val的节点到序号为index之后
 	node<T>* del_node(int index);              //删除index号节点，范围1~list长度，返回删除的节点

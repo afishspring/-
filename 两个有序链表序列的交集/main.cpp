@@ -27,23 +27,24 @@ bool input(list<int>& _l) {
 
 //求两链表交集，双指针遍历两链表
 void unit(list<int>& _lista, list<int>& _listb) {
-	int pa = 1, pb = 1;
-	int vala=0,valb= 0;
-	while (pa != _lista.get_length()+1 && pb != _listb.get_length()+1) {
-		vala = _lista.get_node(pa);
-		valb = _listb.get_node(pb);
+	list<int>::iterator ita = _lista.begin(), itb = _listb.begin();
+	int vala = 0, valb = 0, pa = 1;
+	while (ita != ++_lista.end() && itb != ++_listb.end()) {
+		vala = *ita;
+		valb = *itb;
 		if (vala < valb) {
+			ita++;
 			_lista.del_node(pa);
 		}
 		else if (vala == valb) {
+			ita++;
 			pa++;
-			pb++;
+			itb++;
 		}
 		else {
-			pb++;
+			itb++;
 		}
 	}
-
 }
 
 int main() {
