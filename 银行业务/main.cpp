@@ -1,5 +1,5 @@
 #include <iostream>
-#include <queue>
+#include "myqueue.hpp"
 using namespace std;
 //对输入数据进行检验合法
 //[left,right]为数据范围
@@ -21,7 +21,6 @@ bool inputCheck(int& num, const int left, const int right) {
 
 int main() {
 	int num;
-	queue<int>qA, qB;
 	while (true) {
 		cout << "请输入办理业务的人数：";
 		cin >> num;
@@ -30,6 +29,7 @@ int main() {
 		}
 		break;
 	}
+	queue<int>qA(num), qB(num);
 	int temp;
 	for (int i = 1; i <= num; i++) {
 		if (i == 1) {
@@ -38,8 +38,8 @@ int main() {
 		cin >> temp;
 		if (!inputCheck(temp, 1, INT_MAX)) {
 			i = 0;              //标定重新输入的位置
-			qA = queue<int>();  //清空队列qA
-			qB = queue<int>();  //清空队列qB
+			qA.clear();         //清空队列qA
+			qB.clear();         //清空队列qB
 			continue;
 		}
 		if (temp % 2 != 0) {    //奇数进队列qA
@@ -52,37 +52,25 @@ int main() {
 
 	cout << "顾客离开银行的顺序：" << endl;
 	while (true) {
-		if (!qA.empty()) {
-			if (num != 1) {    //确保最后一个编号没有多余的空格
-				cout << qA.front() << " ";
-			}
-			else {
-				cout << qA.front();
-			}
+		if (!qA.isEmpty()) {
+			cout << qA.front();
+			if (num != 1) { cout << " "; }  //确保最后一个编号没有多余的空格
 			qA.pop();
 			num--;
-			if (qA.size() % 2 == 1) {
-				if (num != 1) {
-					cout << qA.front() << " ";
-				}
-				else {
-					cout << qA.front();
-				}
+			if (!qA.isEmpty()) {
+				cout << qA.front();
+				if (num != 1) { cout << " "; }
 				qA.pop();
 				num--;
 			}
 		}
-		if (!qB.empty()) {
-			if (num != 1) {
-				cout << qB.front() << " ";
-			}
-			else {
-				cout << qB.front();
-			}
+		if (!qB.isEmpty()) {
+			cout << qB.front();
+			if (num != 1) { cout << " "; }
 			qB.pop();
 			num--;
 		}
-		if (qA.empty() && qB.empty()) {
+		if (qA.isEmpty() && qB.isEmpty()) {
 			break;
 		}
 	}
@@ -90,3 +78,4 @@ int main() {
 //8 2 1 3 9 4 11 13 15
 //8 2 1 3 9 4 11 14 16
 //1 6
+//1 2 5 9 8 3 6 7
