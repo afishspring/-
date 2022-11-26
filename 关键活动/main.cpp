@@ -5,7 +5,6 @@ int main() {
 	AGraph aoe;
 	if (!aoe.checkAOE()|| !aoe.TopSort())exit(-1);
 	aoe.CriticalPath();
-	aoe.print();
 	return 0;
 }
 /*
