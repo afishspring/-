@@ -9,18 +9,18 @@ struct ArcNode {
 	int _weight;
 	int _id;
 	ArcNode* nextArc;
-	friend class AGraph;
 };
 
 struct VNode {
+	int outDegree = 0;
 	ArcNode* first = NULL;
-	friend class AGraph;
 };
 
 class AGraph {
 public:
 	AGraph();
 	~AGraph();
+	bool checkAOE();
 	bool TopSort();
 	void CriticalPath();
 	//用于调试
@@ -28,6 +28,14 @@ public:
 	//	cout << endl << "order:" << endl;
 	//	for (int i = 0; i < _nNode; i++) {
 	//		cout << order[i] << " ";
+	//	}
+	//	cout << endl << "in:" << endl;
+	//	for (int i = 0; i < _nNode; i++) {
+	//		cout << inDegree[i] << " ";
+	//	}
+	//	cout << endl << "out:" << endl;
+	//	for (int i = 0; i < _nNode; i++) {
+	//		cout << net[i].outDegree << " ";
 	//	}
 	//	cout << endl << "ve:" << endl;
 	//	for (int i = 0; i < _nNode; i++) {
@@ -101,8 +109,14 @@ AGraph::AGraph()
 			from -= 1;
 			to -= 1;
 			ArcNode* arc = new ArcNode(to, weight, i);
-			arc->nextArc = net[from].first;
-			net[from].first = arc;
+			if (net[from].first == nullptr) {
+				net[from].first = arc;
+			}
+			else {
+				arc->nextArc = net[from].first;
+				net[from].first = arc;
+			}
+			net[from].outDegree++;
 			inDegree[to]++;
 			edgeInfo[i] = from * 1000 + to;
 		}
@@ -130,14 +144,34 @@ AGraph::~AGraph()
 	delete[]l;
 }
 
+bool AGraph::checkAOE()
+{
+	for (int i = 0; i < _nNode; i++) {
+		if (net[i].outDegree == 0 && i != _nNode - 1) {
+			cerr << "存在多终点！" << endl;
+			return false;
+		}
+		if (inDegree[i] == 0&&i!=0) {
+			cerr << "存在多起点！" << endl;
+			return false;
+		}
+	}
+	return true;
+}
+
 bool AGraph::TopSort()
 {
 	int top = -1, count = 0;
-	for (int i = 0; i < _nNode; i++)
+	for (int i = 0; i < _nNode; i++) {
+		if (net[i].outDegree == 0 && i != _nNode - 1) {
+			cerr << "存在多终点！" << endl;
+			return false;
+		}
 		if (inDegree[i] == 0) {
 			inDegree[i] = top;
 			top = i;
 		}
+	}
 	for (int i = 0; i < _nNode; i++) {
 		if (top == -1) {
 			cerr << "0" << endl;
@@ -172,7 +206,7 @@ void AGraph::CriticalPath()
 	while (top != -1) {
 		v= order[top--];
 		ArcNode* p = net[v].first;
-		vl[v] = vl[p->_toNode];
+		vl[v] = INT_MAX;
 		while (p != NULL) {
 			if (vl[p->_toNode] - p->_weight < vl[v])
 				vl[v] = vl[p->_toNode] - p->_weight;

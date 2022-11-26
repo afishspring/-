@@ -2,11 +2,10 @@
 #include "AOE.h"
 using namespace std;
 int main() {
-	AGraph a;
-	if (!a.TopSort()) {
-		exit(1);
-	}
-	a.CriticalPath();
+	AGraph aoe;
+	if (!aoe.checkAOE()|| !aoe.TopSort())exit(-1);
+	aoe.CriticalPath();
+	aoe.print();
 	return 0;
 }
 /*
@@ -46,4 +45,12 @@ int main() {
 6 8 4
 7 9 2
 8 9 4
+*/
+/*
+4 5
+1 2 4
+2 3 5
+3 4 6
+4 2 3
+4 1 2
 */
