@@ -1,5 +1,8 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include "mystack.hpp"
+#include "mystring.h"
+
 using namespace std;
 
 //符号优先级
@@ -17,17 +20,17 @@ int priority(char oper) {
 }
 
 //中缀->后缀
-string trans(string &infix) {
-	string suffix;
+mystring trans(mystring &infix) {
+	mystring suffix;
 	stack<char>operStack(infix.size());
-	for (int i = 0; i <(int) infix.size(); i++) {
+	for (int i = 0; i <=(int) infix.size(); i++) {
 		//遇到数字直接输出，包括负数
 		if (infix[i] >= '0' && infix[i] <= '9'|| infix[i] == '.'  //无符号数字
 			|| i == 0 && infix[i] == '-'  //第一个字符为减号的一定是负号
 			|| i > 0 && infix[i] == '-' && infix[i - 1] != ')' && (infix[i - 1] < '0' || infix[i - 1]>'9')) { //"-"当减号用时，仅有前面是数字和后括号两种情况
 			suffix += infix[i];
 			//没到算术式末尾，并且下一个字符不是数字类字符，说明数字输出结束
-			if (i  != (int)infix.size()&&!(infix[i + 1] >= '0' && infix[i + 1] <= '9' || infix[i + 1] == '.'))suffix += " ";
+			if (i != (int)infix.size() + 1 && !(infix[i + 1] >= '0' && infix[i + 1] <= '9' || infix[i + 1] == '.'))suffix += " ";
 		}
 		//"+"与"-"同理，不过不用输出
 		else if (i == 0 && infix[i] == '+'
@@ -70,20 +73,51 @@ string trans(string &infix) {
 }
 
 //单字符读取一行，并忽略空格
-void read(string& s) {
+void read(mystring& s) {
 	char t = '0';
-	while (t != '\n') {
-		t = getchar();
-		if (t >= '0' && t <= '9' || t == '+' || t == '-' || t == '*' || t == '/' || t == '(' || t == ')'||t=='.')
-			s += t;
+	int n = 0;
+	while (true) {
+		bool flag = true;
+		while (t != '\n') {
+			if (n > 20) {
+				flag = false;
+				break;
+			}
+			t = getchar();
+			if (t >= '0' && t <= '9' || t == '+' || t == '-' || t == '*' || t == '/' || t == '(' || t == ')' || t == '.') {
+				s += t; n++;
+			}
+			else if (t == ' ' || t == '\n');
+			else {
+				flag = false;
+				break;
+			}
+		}
+		if (n > 20) {
+			s.clear(); t = '0'; n = 0; flag = true;
+			cerr << "输入字符超过20个！" << endl;
+			cin.clear();
+			cin.ignore(INT_MAX, '\n');
+			continue;
+		}
+		else if (flag == false) {
+			s .clear(); t = '0'; n = 0; flag = true;
+			cerr << "输入有非法字符！" << endl;
+			cin.clear();
+			cin.ignore(INT_MAX, '\n');
+			continue;
+		}
+		else {
+			break;
+		}
 	}
 }
 
 int main() {
-	string _infix, _suffix;
+	mystring _infix, _suffix;
 	read(_infix);
 	_suffix=trans(_infix);
-	_suffix.erase(_suffix.find_last_not_of(" ") + 1);//删除结果字符串结尾的空格
+	_suffix.erase(_suffix.size());//删除结果字符串结尾的空格
 	cout << _suffix;
 }
 //测试数据
