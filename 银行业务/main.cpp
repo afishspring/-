@@ -52,25 +52,26 @@ int main() {
 
 	cout << "顾客离开银行的顺序：" << endl;
 	while (true) {
-		if (!qA.isEmpty()) {
+		if (!qA.isEmpty()) {				//qA输出第一个数
 			cout << qA.front();
 			if (num != 1) { cout << " "; }  //确保最后一个编号没有多余的空格
 			qA.pop();
 			num--;
-			if (!qA.isEmpty()) {
-				cout << qA.front();
-				if (num != 1) { cout << " "; }
-				qA.pop();
-				num--;
-			}
+
 		}
-		if (!qB.isEmpty()) {
+		if (!qA.isEmpty()) {				//qA输出第二个数
+			cout << qA.front();
+			if (num != 1) { cout << " "; }
+			qA.pop();
+			num--;
+		}
+		if (!qB.isEmpty()) {				//qB输出一个数
 			cout << qB.front();
 			if (num != 1) { cout << " "; }
 			qB.pop();
 			num--;
 		}
-		if (qA.isEmpty() && qB.isEmpty()) {
+		if (qA.isEmpty() && qB.isEmpty()) {	//输出终止条件
 			break;
 		}
 	}
